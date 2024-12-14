@@ -1,0 +1,406 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Página Principal</title>
+        <style>
+            body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+                overflow-x: hidden;
+                transition: background-color 0.3s, color 0.3s;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 250px;
+                height: 100%;
+                background-color: #f4f4f4;
+                padding: 20px;
+                border-right: 2px solid #ddd;
+                box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+                transform: translateX(-100%);
+                transition: transform 0.5s ease;
+                z-index: 1000;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar h2 {
+                margin-top: 0;
+                position: relative;
+                padding-right: 60px;
+            }
+
+            .sidebar ul {
+                list-style-type: none;
+                padding: 0;
+                margin-top: 40px; /* Añade un margen superior */
+            }
+
+            .sidebar ul li {
+                margin-bottom: 10px;
+            }
+
+            .sidebar ul li a {
+                text-decoration: none;
+                color: #333;
+                font-size: 1.1em;
+                display: block;
+                padding: 10px;
+                border-radius: 5px;
+                transition: background-color 0.3s ease;
+            }
+
+            .sidebar ul li a:hover {
+                background-color: #0066ff; /* Cambiado a azul */
+                color: #fff;
+            }
+
+            .main-content {
+                padding: 20px;
+                margin-left: 250px;
+                transition: margin-left 0.5s ease;
+            }
+
+            .toggle-btn {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                background-color: transparent;
+                color: #0066ff;
+                border: none;
+                padding: 12px;
+                border-radius: 50%;
+                cursor: pointer;
+                z-index: 1010;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                transition: left 0.5s ease, background-color 0.3s ease;
+            }
+
+            .toggle-btn:hover {
+                background-color: rgba(40, 167, 69, 0.1);
+            }
+
+            .toggle-btn span {
+                display: block;
+                width: 30px;
+                height: 3px;
+                background: #0066ff;
+                position: relative;
+                transition: background 0.3s ease;
+            }
+
+            .toggle-btn span::before,
+            .toggle-btn span::after {
+                content: "";
+                display: block;
+                width: 30px;
+                height: 3px;
+                background: #0066ff;
+                position: absolute;
+                left: 0;
+                transition: transform 0.3s ease;
+            }
+
+            .toggle-btn span::before {
+                top: -8px;
+            }
+
+            .toggle-btn span::after {
+                top: 8px;
+            }
+
+            .toggle-btn.active span {
+                background: transparent;
+            }
+
+            .toggle-btn.active span::before {
+                transform: rotate(45deg);
+                top: 0;
+            }
+
+            .toggle-btn.active span::after {
+                transform: rotate(-45deg);
+                top: 0;
+            }
+
+            .publication {
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                margin-bottom: 20px;
+                padding: 15px;
+                background-color: #fff;
+                display: inline-block;
+                min-width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .publication-content {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                word-wrap: break-word;
+            }
+
+            .publication-description {
+                margin-bottom: 10px;
+                overflow-wrap: break-word;
+                hyphens: auto;
+            }
+
+            .publication-date {
+                color: #888;
+                font-size: 0.9em;
+                white-space: nowrap;
+                overflow-wrap: break-word;
+            }
+
+            /* Estilos para el toggle minimalista */
+            .switch-container {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-top: 20px;
+            }
+
+            .switch-label {
+                font-size: 1em;
+                color: #333;
+                margin-right: 10px;
+            }
+
+            /* Estilos del toggle switch */
+            .switch {
+                position: relative;
+                width: 50px;
+                height: 24px;
+                border-radius: 50px;
+                background-color: #ccc;
+                transition: 0.3s;
+            }
+
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            .switch .slider {
+                position: absolute;
+                top: 2px;
+                left: 2px;
+                width: 20px;
+                height: 20px;
+                background-color: white;
+                border-radius: 50%;
+                transition: 0.3s;
+            }
+
+            .switch input:checked + .slider {
+                transform: translateX(26px);
+                background-color: #0066ff;
+            }
+
+            body.dark-mode {
+                background-color: #121212;
+                color: #e0e0e0;
+            }
+
+            body.dark-mode .sidebar {
+                background-color: #1e1e1e;
+                border-right: 2px solid #333;
+            }
+
+            body.dark-mode .sidebar ul li a {
+                color: #e0e0e0;
+            }
+
+            body.dark-mode .sidebar ul li a:hover {
+                background-color: #0066ff;
+                color: #fff;
+            }
+
+            body.dark-mode .publication {
+                background-color: #2c2c2c;
+                color: #e0e0e0;
+                border: 1px solid #444;
+            }
+
+            body.dark-mode .ui-datatable {
+                background-color: #1e1e1e;
+                color: #e0e0e0;
+            }
+
+            body.dark-mode .ui-datatable thead {
+                background-color: #333;
+                color: #e0e0e0;
+            }
+
+            body.dark-mode .ui-datatable tbody tr:nth-child(even) {
+                background-color: #2c2c2c;
+            }
+
+            body.dark-mode .ui-datatable tbody tr:nth-child(odd) {
+                background-color: #1e1e1e;
+            }
+
+            body.dark-mode .ui-datatable th,
+            body.dark-mode .ui-datatable td {
+                border: 1px solid #444;
+            }
+
+            body.dark-mode .ui-datatable .ui-cell-text {
+                color: #e0e0e0;
+            }
+
+            body.dark-mode .ui-dialog {
+                background-color: #1e1e1e;
+                color: #e0e0e0;
+            }
+
+            body.dark-mode .ui-dialog .ui-dialog-titlebar {
+                background-color: #333;
+                color: #e0e0e0;
+            }
+
+            body.dark-mode .ui-dialog .ui-dialog-content {
+                background-color: #2c2c2c;
+                color: #e0e0e0;
+            }
+
+            body.dark-mode .ui-dialog .ui-button {
+                background-color: #0066ff;
+                color: #fff;
+                border: none;
+                padding: 6px 12px;
+                border-radius: 5px;
+                transition: background-color 0.3s ease;
+            }
+
+            body.dark-mode .ui-dialog .ui-button:hover {
+                background-color: #004cbf;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <div class="sidebar" id="sidebar">
+
+            <ul>
+                <li><a href="home.xhtml">Inicio</a></li>
+                <li><a href="uPerfil.xhtml">Perfil</a></li>
+                <li><a href="uHistorial.xhtml">Historial de Subastas</a></li>
+                <li><a href="uNotificacion.xhtml">Notificaciones</a></li>
+                
+                <li>
+                    <h:form>
+                        <h:commandLink value="Crear Subasta" action="crearSubasta.xhtml" rendered="#{loginController.esAdmin()}"/>
+                    </h:form>
+                </li>
+                <li><a href="login.xhtml" >Cerrar Sesión</a></li>
+            </ul> 
+            <div class="switch-container">
+                <label class="switch-label">Modo Oscuro</label>
+                <label class="switch">
+                    <input type="checkbox" id="darkModeSwitch" onchange="toggleDarkMode()"/>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="main-content">
+            
+            <button id="menu-toggle-btn" class="toggle-btn">
+                <span></span>
+            </button>
+
+            <h:form>
+                <p:dataTable var="subasta" value="#{subastaController.subastas}" rowKey="#{subasta.id}">
+                    <f:facet name="header">
+                        PUJA YA 
+                    </f:facet>
+
+                    <p:column style="width:2rem" ariaHeaderText="Row Toggler">
+                        <p:rowToggler/>
+                    </p:column>
+
+                    <p:column headerText="Producto">
+                        <h:outputText value="#{subasta.producto}"/>
+                    </p:column>
+
+                    <p:column headerText="Categoría">
+                        <h:outputText value="#{subasta.categoria}"/>
+                    </p:column>
+
+                    <p:column headerText="Precio Inicial">
+                        <h:outputText value="#{subasta.precioInicial}">
+                            <f:convertNumber type="currency" currencySymbol="₡"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Precio Actual">
+                        <h:outputText value="#{subasta.montoFinal}">
+                            <f:convertNumber type="currency" currencySymbol="₡"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Fecha Final">
+                        <h:outputText value="#{subasta.fechaFin}"/>
+                    </p:column>
+
+                    <p:rowExpansion>
+                        <div class="product">
+                            <div class="product-list-item">
+                                <div>
+                                    <p:commandButton value="Hacer Oferta" icon="pi pi-money-bill"
+                                                     disabled="#{subasta.cerrada}" oncomplete="PF('pujaDialog').show()">
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </div>
+                    </p:rowExpansion>
+                </p:dataTable>
+            </h:form>
+
+            <!-- Diálogo de ejemplo -->
+            <p:dialog header="Realizar Puja" widgetVar="pujaDialog" modal="true" closable="true">
+                <h:form>
+                    <h:inputHidden value="#{pujaController.subastaId}" />
+                    <p:inputText value="#{pujaController.montoPuja}" placeholder="Monto de la puja" required="true" />
+
+                    <p:commandButton value="Realizar Puja" action="#{pujaController.realizarPuja}">
+                        
+                    </p:commandButton>
+                </h:form>
+            </p:dialog>
+
+        </div>
+
+        <script>
+            const sidebar = document.getElementById('sidebar');
+            const menuToggleBtn = document.getElementById('menu-toggle-btn');
+            const darkModeSwitch = document.getElementById('darkModeSwitch');
+
+            menuToggleBtn.addEventListener('click', function () {
+                sidebar.classList.toggle('open');
+            });
+
+            function toggleDarkMode() {
+                document.body.classList.toggle('dark-mode');
+            }
+        </script>
+    </h:body>
+</html>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Iniciar sesión</title>
+
+        <style>
+            /* Contenedor principal */
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh; /* Ocupa toda la altura de la ventana */
+                background: linear-gradient(to bottom, #000000, #0066ff);
+                font-family: Arial, sans-serif;
+                text-align: center; /* Centrar el contenido del texto */
+            }
+
+            /* Cabecera */
+            .header h2 {
+                color: #fff;
+                font-size: 2rem;
+                margin: 0 auto; /* Centra el título */
+            }
+
+            /* Contenedor del formulario */
+            .form-container {
+                background-color: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+                max-width: 400px;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center; /* Centra los elementos dentro */
+            }
+
+            /* Título del formulario */
+            .form-container h2 {
+                margin-bottom: 20px;
+                color: #333;
+                text-align: center;
+            }
+
+            /* Campos de entrada */
+            .p-inputtext {
+                width: 100%;
+                margin-bottom: 20px; /* Separación entre campos */
+                text-align: center; /* Centra el texto dentro del input */
+                padding: 10px; /* Mejora la usabilidad */
+            }
+
+            /* Botón personalizado */
+            .custom-button {
+                background-color: #0066ff !important;
+                border: none !important;
+                color: white !important;
+                padding: 10px 15px !important;
+                border-radius: 5px !important;
+                width: 100% !important;
+                font-size: 16px;
+                text-align: center; /* Asegura el centrado del texto */
+            }
+
+            .custom-button:hover {
+                background-color: #0052cc !important;
+            }
+
+            /* Enlace para registrarse */
+            .signup-button {
+                margin-top: 20px; /* Aumento el margen superior para separar más */
+                text-align: center;
+                font-size: 14px;
+                color: #0066ff;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+            .signup-button:hover {
+                text-decoration: underline;
+            }
+
+            /* Diálogo */
+            .ui-dialog .ui-panel {
+                border-radius: 10px;
+            }
+
+            /* Diálogo para registro */
+            .p-dialog .form-container {
+                align-items: center; /* Centra los elementos en el diálogo */
+                text-align: center;
+            }
+
+            .ui-messages-info {
+                color: green;
+            }
+
+            .ui-messages-error {
+                color: red;
+            }
+
+        </style>
+    </h:head>
+
+    <h:body>
+
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{loginController.prepararFormulario}" />
+        </f:metadata>
+
+        <div class="container">
+
+            <!-- Formulario de Inicio de Sesión -->
+            <div class="form-container">
+                <h2>Inicio de Sesión</h2>
+                <p:messages id="messages" closable="true" showDetail="true" style="color: red;" />
+
+                <h:form>
+                    <p:inputText placeholder="Correo electrónico" value="#{loginController.email}" required="true" 
+                                 label="Correo" styleClass="p-inputtext p-component" />
+                    <p:password placeholder="Contraseña" value="#{loginController.contrasena}" required="true" 
+                                label="Contraseña" styleClass="p-inputtext p-component" />
+                    <p:commandButton value="Iniciar Sesión" action="#{loginController.iniciarSesion}" 
+                                     styleClass="custom-button" update="messages" />
+                    <p:commandLink value="Registrar Usuario" oncomplete="PF('registroUsuarioDialog').show()" 
+                                   styleClass="signup-button" />
+                </h:form>
+            </div>
+        </div>
+        <!-- Diálogo para registro de usuario -->
+        <p:dialog header="Registrar Nuevo Usuario" widgetVar="registroUsuarioDialog" modal="true" resizable="false" closable="true">
+            <h:form id="registroForm">
+                <div class="form-container">
+
+                    <p:messages id="registroMessages" closable="true" showDetail="true"
+                                styleClass="ui-messages-success" severity="info,error" />
+
+                    <p:inputText placeholder="Nombre completo" value="#{loginController.nombre}" required="true" 
+                                 label="Nombre completo" styleClass="p-inputtext p-component" />
+                    <p:inputText placeholder="Correo electrónico" value="#{loginController.email}" required="true" 
+                                 label="Correo" styleClass="p-inputtext p-component" />
+                    <p:password placeholder="Contraseña" value="#{loginController.contrasena}" required="true" 
+                                label="Contraseña" styleClass="p-inputtext p-component" />
+
+                    <p:outputLabel for="rol" value="Tipo de Usuario:" />
+                    <p:selectOneRadio id="rol" value="#{loginController.rol}" required="true">
+                        <f:selectItem itemLabel="Usuario" itemValue="Usuario" />
+                        <f:selectItem itemLabel="Administrador" itemValue="Admin" />
+                    </p:selectOneRadio>
+
+                    <p:commandButton value="Registrarse" actionListener="#{loginController.registrarUsuario}" 
+                                     styleClass="custom-button" update="registroMessages" />
+                </div>
+            </h:form>
+        </p:dialog>
+
+
+    </h:body>
+</html>

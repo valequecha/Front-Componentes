@@ -1,0 +1,277 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Crear Subasta</title>
+        <style>
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh; /* Ocupa toda la altura de la ventana */
+                background: linear-gradient(to bottom, #000000, #0066ff);
+                font-family: Arial, sans-serif;
+                text-align: center; /* Centrar el contenido del texto */
+            }
+            body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+                overflow-x: hidden;
+                transition: background-color 0.3s, color 0.3s;
+                background: linear-gradient(to bottom, #000000, #0066ff);
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 250px;
+                height: 100%;
+                background-color: #f4f4f4;
+                padding: 20px;
+                border-right: 2px solid #ddd;
+                box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 1000;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar h2 {
+                margin-top: 0;
+                position: relative;
+                padding-right: 60px;
+            }
+
+            .sidebar ul {
+                list-style-type: none;
+                padding: 0;
+                margin-top: 40px;
+            }
+
+            .sidebar ul li {
+                margin-bottom: 10px;
+            }
+
+            .sidebar ul li a {
+                text-decoration: none;
+                color: #333;
+                font-size: 1.1em;
+                display: block;
+                padding: 10px;
+                border-radius: 5px;
+                transition: background-color 0.3s ease;
+            }
+
+            .sidebar ul li a:hover {
+                background-color: #0066ff;
+                color: #fff;
+            }
+
+
+            /* archivo de estilos.css */
+            .main-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 90vh; /* ajusta según tus necesidades, puede ser menos según la altura de tu ventana */
+                padding: 20px;
+                margin-left: 120px;
+                transition: margin-left 0.3s ease;
+                color: white; /* letras en blanco para los títulos y labels */
+            }
+
+            .input-text-black {
+                color: black; /* letras en negro para los campos de entrada */
+            }
+
+            .main-content h1 {
+                margin-bottom: 20px; /* espacio entre el título y los campos de entrada */
+            }
+
+            .toggle-btn {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                background-color: transparent;
+                color: #0066ff;
+                border: none;
+                padding: 12px;
+                border-radius: 50%;
+                cursor: pointer;
+                z-index: 1010;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                transition: left 0.3s ease, background-color 0.3s ease;
+            }
+
+            .toggle-btn:hover {
+                background-color: rgba(40, 167, 69, 0.1);
+            }
+
+            .toggle-btn span {
+                display: block;
+                width: 30px;
+                height: 3px;
+                background: #0066ff;
+                position: relative;
+                transition: background 0.3s ease;
+            }
+
+            .toggle-btn span::before,
+            .toggle-btn span::after {
+                content: "";
+                display: block;
+                width: 30px;
+                height: 3px;
+                background: #0066ff;
+                position: absolute;
+                left: 0;
+                transition: transform 0.3s ease;
+            }
+
+            .toggle-btn span::before {
+                top: -8px;
+            }
+
+            .toggle-btn span::after {
+                top: 8px;
+            }
+
+            .toggle-btn.active span {
+                background: transparent;
+            }
+
+            .toggle-btn.active span::before {
+                transform: rotate(45deg);
+                top: 0;
+            }
+
+            .toggle-btn.active span::after {
+                transform: rotate(-45deg);
+                top: 0;
+            }
+
+            body.dark-mode {
+                background-color: #121212;
+                color: #e0e0e0;
+            }
+
+            .switch-container {
+                margin-top: 20px;
+                display: flex;
+                align-items: center;
+            }
+
+            .switch-label {
+                margin-right: 10px;
+            }
+
+            .switch input {
+                display: none;
+            }
+
+            .switch .slider {
+                width: 34px;
+                height: 20px;
+                background-color: #ccc;
+                border-radius: 50px;
+                position: relative;
+                transition: 0.4s;
+            }
+
+            .switch .slider:before {
+                content: "";
+                position: absolute;
+                height: 12px;
+                width: 12px;
+                border-radius: 50px;
+                background-color: white;
+                left: 4px;
+                bottom: 4px;
+                transition: 0.4s;
+            }
+
+            .switch input:checked + .slider {
+                background-color: #0066ff;
+            }
+
+            .switch input:checked + .slider:before {
+                transform: translateX(14px);
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <div class="sidebar" id="sidebar">
+
+            <ul>
+                <li><a href="home.xhtml">Inicio</a></li>
+                <li><a href="uPerfil.xhtml">Perfil</a></li>
+                <li><a href="uHistorial.xhtml">Historial de Subastas</a></li>
+                <li><a href="uNotificacion.xhtml">Notificaciones</a></li>
+                
+                <li>
+                    <h:form>
+                        <h:commandLink value="Crear Subasta" action="crearSubasta.xhtml" rendered="#{loginController.esAdmin()}"/>
+                    </h:form>
+                </li>
+                <li><a href="login.xhtml" >Cerrar Sesión</a></li>
+            </ul> 
+            <div class="switch-container">
+                <label class="switch-label">Modo Oscuro</label>
+                <label class="switch">
+                    <input type="checkbox" id="darkModeSwitch" onchange="toggleDarkMode()"/>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+
+        <div class="main-content">
+            <button id="menu-toggle-btn" class="toggle-btn">
+                <span></span>
+            </button>
+
+            <h1>Crear Subasta</h1>
+            <h:form id="subastaForm">
+                <h:panelGrid columns="2" styleClass="ui-panelgrid-plain" cellpadding="10">
+                    <p:outputLabel for="producto" value="Producto" />
+                    <p:inputText id="producto" value="#{subastaController.producto}" required="true" class="input-text-black" />
+
+                    <p:outputLabel for="categoria" value="Categoría" />
+                    <p:inputText id="categoria" value="#{subastaController.categoria}" required="true" class="input-text-black" />
+
+                    <p:outputLabel for="precioInicial" value="Precio Inicial" />
+                    <p:inputText id="precioInicial" value="#{subastaController.precioInicial}" required="true" class="input-text-black" />
+
+                    <h:commandButton value="Crear Subasta" action="#{subastaController.crearSubasta}" />
+                </h:panelGrid>
+            </h:form>
+        </div>
+
+        <script>
+            const sidebar = document.getElementById('sidebar');
+            const menuToggleBtn = document.getElementById('menu-toggle-btn');
+            const darkModeSwitch = document.getElementById('darkModeSwitch');
+
+            menuToggleBtn.addEventListener('click', function () {
+                sidebar.classList.toggle('open');
+            });
+
+            function toggleDarkMode() {
+                document.body.classList.toggle('dark-mode');
+            }
+        </script>
+    </h:body>
+
+</html>
