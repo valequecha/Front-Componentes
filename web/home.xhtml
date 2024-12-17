@@ -304,7 +304,7 @@
                 <li><a href="uPerfil.xhtml">Perfil</a></li>
                 <li><a href="uHistorial.xhtml">Historial de Subastas</a></li>
                 <li><a href="uNotificacion.xhtml">Notificaciones</a></li>
-                
+
                 <li>
                     <h:form>
                         <h:commandLink value="Crear Subasta" action="crearSubasta.xhtml" rendered="#{loginController.esAdmin()}"/>
@@ -322,10 +322,14 @@
         </div>
 
         <div class="main-content">
-            
+
+            <p:growl id="messages" widgetVar="dataTableGrowl" showDetail="true" />
+
             <button id="menu-toggle-btn" class="toggle-btn">
                 <span></span>
             </button>
+
+
 
             <h:form>
                 <p:dataTable var="subasta" value="#{subastaController.subastas}" rowKey="#{subasta.id}">
@@ -362,29 +366,44 @@
                     </p:column>
 
                     <p:rowExpansion>
-                        <div class="product">
-                            <div class="product-list-item">
-                                <div>
-                                    <p:commandButton value="Hacer Oferta" icon="pi pi-money-bill"
-                                                     disabled="#{subasta.cerrada}" oncomplete="PF('pujaDialog').show()">
-                                    </p:commandButton>
+                        <h:form>
+                            <div class="product">
+                                <div class="product-list-item">
+                                    <div>
+                                        <p:commandButton value="Hacer Oferta" icon="pi pi-money-bill"
+                                                         disabled="#{subasta.cerrada}" oncomplete="PF('pujaDialog').show()">
+                                        </p:commandButton>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </h:form>
                     </p:rowExpansion>
+
                 </p:dataTable>
             </h:form>
 
-            <!-- Diálogo de ejemplo -->
-            <p:dialog header="Realizar Puja" widgetVar="pujaDialog" modal="true" closable="true">
-                <h:form>
-                    <h:inputHidden value="#{pujaController.subastaId}" />
-                    <p:inputText value="#{pujaController.montoPuja}" placeholder="Monto de la puja" required="true" />
 
-                    <p:commandButton value="Realizar Puja" action="#{pujaController.realizarPuja}">
-                        
-                    </p:commandButton>
-                </h:form>
+            <!-- Diálogo para realizar una puja -->
+            <p:dialog header="Realizar Puja" widgetVar="pujaDialog" modal="true" resizable="false" style="width: 700px; height: auto;">
+                <h:panelGrid id="puja-panel" columns="6" style="width: 100%; align-items: center;" styleClass="ui-fluid">
+
+
+                    <!-- Monto de Puja -->
+                    <h:outputLabel for="montoPuja" value="Monto de Puja" style="text-align: center; width: 100px;" />
+                    <p:inputText id="montoPuja" value="#{pujaController.puja.monto}" required="true"
+                                 style="width: 150px;" placeholder="Ingrese el monto" />
+
+                    <!-- Fecha de la Puja -->
+                    <h:outputLabel for="fechaPuja" value="Fecha de Puja" style="text-align: center; width: 100px;" />
+                    <p:datePicker id="fechaPuja" value="#{pujaController.puja.fechaPuja}" pattern="dd/MM/yyyy" required="true"
+                                  showIcon="true" placeholder="Fecha" style="width: 150px;" />
+
+                    <!-- Botón para confirmar la puja -->
+                    <h:outputLabel />
+                    <p:commandButton value="Realizar Puja" action="#{pujaController.registrarPuja()}" 
+                                     oncomplete="PF('pujaDialog').hide()"
+                                     style="margin-right: 10px; background-color: #0088cc; color: white; border-radius: 5px;" />
+                </h:panelGrid>
             </p:dialog>
 
         </div>

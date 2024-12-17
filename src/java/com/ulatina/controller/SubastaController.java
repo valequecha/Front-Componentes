@@ -83,41 +83,6 @@ public class SubastaController implements Serializable {
         fechaInicio = LocalDateTime.now();
         fechaFin = fechaInicio.plusDays(7);
     }
-    
-
-
-    public String realizarPuja(Subasta subasta, Double montoPuja) {
-        try {
-            if (!loginController.isAutenticado()) {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Debes iniciar sesión para realizar una puja"));
-                return null;
-            }
-
-            if (subasta == null || montoPuja <= 0) {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Datos inválidos para realizar la puja"));
-                return null;
-            }
-
-            Usuario usuarioActual = loginController.getUsuarioActual();
-            boolean exito = servicioPuja.realizarPuja(usuarioActual, subasta, montoPuja);
-
-            if (exito) {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Puja realizada exitosamente."));
-                return "subastaDetalle.xhtml?faces-redirect=true&subastaId=" + subasta.getId();
-            } else {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo realizar la puja."));
-                return null;
-            }
-        } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al realizar la puja: " + e.getMessage()));
-            return null;
-        }
-    }
 
     // Getters y Setters
     public String getProducto() {
